@@ -1,0 +1,32 @@
+Discounted Cost (CAD),1449,1629,2199,2799,3399,2149,2649,3149,3649
+Cost (CAD),1599,1979,2649,3249,3849,2599,3199,3699,4199
+Rear-Cam Video,1080,1080,1080,1080,1080,1080,1080,1080,1080
+Rear-Cam Photo (MP),8,8,8,8,8,8,8,8,8
+Front-Cam Video,1080,1080,1080,1080,1080,1080,1080,1080,1080
+Front-Cam Photo (MP),5,5,5,5,5,5,5,5,5
+SDXC,1,1,1,1,1,1,1,1,1
+USB type-C,1,1,1,1,1,1,1,1,1
+USB type-A,2,2,2,2,2,2,2,2,2
+Weight (g),1534,1534,1642,1642,1642,1905,1905,1905,1905
+Power (W),44,44,102,102,102,102,102,102,102
+Windows Hello,Y,Y,Y,Y,Y,Y,Y,Y,Y
+Thickness (mm),18,18,19,19,19,19,19,19,19
+OS,Windows 10 Pro,Windows 10 Pro,Windows 10 Pro,Windows 10 Pro,Windows 10 Pro,Windows 10 Pro,Windows 10 Pro,Windows 10 Pro,Windows 10 Pro
+VRAM (GB),0,0,2,2,2,0,6,6,6
+Graphics,Intel® HD Graphics 620 integrated GPU,Intel® HD Graphics 620 integrated,NVIDIA® GeForce® GTX 1050 discrete,NVIDIA® GeForce® GTX 1050 discrete,NVIDIA® GeForce® GTX 1050 discrete,Intel® HD Graphics 620 integrated,NVIDIA® GeForce® GTX 1060 discrete,NVIDIA® GeForce® GTX 1060 discrete,NVIDIA® GeForce® GTX 1060 discrete
+Storage (GB),128,256,256,512,1000,256,256,512,1000
+Speed (GHz),3.5,3.6,4.2,4.2,,3.6,4.2,,
+Cores,2,4,4,4,,4,4,,
+Processor,i5-7300U,i5-8350U,i7-8650U,i7-8650U,,i5-8350U,i7-8650U,,
+Specification,LPDDR3,,,LPDDR3,,LPDDR3,,,
+Speed (MHz),1866,,,1866,,1866,,,
+Memory (GB),8,,,16,,16,,,
+Touch,Y,,,,,Y,,,
+Contrast,1600:1,,,,,1600:1,,,
+Aspect,3:2,,,,,3:2,,,
+PPI,267,,,,,260,,,
+Pixels,6000000,,,,,6998400,,,
+Resolution (h),2000,,,,,2160,,,
+Resolution (w),3000,,,,,3240,,,
+Screen Size (in),13.5,,,,,15,,,
+Model,Book2,,,,,,,,

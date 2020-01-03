@@ -1,0 +1,15 @@
+Model,Color,Memory,Processor,Storage,Cost,Discounted Cost
+Laptop2,Black,8,Intel Core i5,256,1649,1203.77
+Laptop2,Black,8,Intel Core i7,256,1999,1649
+Laptop2,Black,16,Intel Core i7,512,2799,2449
+Laptop2,Platinum,8,Intel Core i5,128,1299,1049
+Laptop2,Platinum,8,Intel Core i5,256,1649,1203.77
+Laptop2,Platinum,8,Intel Core i7,256,1999,1649
+Laptop2,Platinum,16,Intel Core i7,512,2799,2449
+Laptop2,Platinum,16,Intel Core i7,1000,3499,1819.48
+Laptop2,Burgundy,8,Intel Core i5,256,1649,1299
+Laptop2,Burgundy,8,Intel Core i7,256,1999,1649
+Laptop2,Burgundy,16,Intel Core i7,512,2799,1623.42
+Laptop2,Cobalt Blue,8,Intel Core i5,256,1649,1299
+Laptop2,Cobalt Blue,8,Intel Core i7,256,1999,1649
+Laptop2,Cobalt Blue,16,Intel Core i7,512,2799,2449
