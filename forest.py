@@ -1,5 +1,7 @@
 import csv
 import random
+import csvlib
+import graphviz
 
 
 class Node:
@@ -118,6 +120,62 @@ class Tree:
             return cls(mapp, dims, root, leafs, size)
 
 
+    def toCSV(self, filename):
+        '''
+        Uses a pre-order traversal algorithm to print tree object to csv.
+        '''
+
+        stylus = csvlib.Stylus(filename)
+
+    
+        def preorder(node, index=[0,0]):
+
+            stylus.writeCell(node.data, index)
+            original_index = index.copy()
+            index[0] += 1
+
+            try:
+                node.branches[0]
+            except:
+                return original_index[1]
+            else:
+                marker = preorder(node.branches[0], index)
+
+            original_index[1] += marker+1
+            original_index[0] += 1
+
+            try:
+                node.branches[1]
+            except:
+                return original_index[1]
+            else:
+                marker = preorder(node.branches[1], original_index)
+                
+                
+
+        preorder(self.root)
+
+
+    def draw(self):
+        dot = graphviz.Digraph(format='png')
+                
+        def traverse(node, idx=0):
+            if node.parent == None:                 # root
+                dot.node(str(id(node)), node.data)
+            else:
+                dot.node(str(id(node)), node.data)
+                dot.edge(str(id(node.parent)), str(id(node)))
+            
+            if node.branches != None:
+                for branch in node.branches:
+                    traverse(branch, idx)
+
+        traverse(self.root)
+
+        with open('dot.txt', 'w') as f:
+            f.write(dot.source)
+        dot.render('tree', view=True)
+
     def pathsToCSV(self):
         '''
         Returns a csv containing all possible tree paths.
@@ -214,4 +272,4 @@ class Tree:
 if __name__ == '__main__':
     tree = Tree.fromCSV('Laptop2_tree.csv', headings=True)
     print(tree)
-    tree.pathsToCSV()
+    tree.draw()
