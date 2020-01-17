@@ -7,6 +7,15 @@ dirs = ['drawings']
 verbose = True
 
 
+def wd():
+    '''
+    Provides information regrading working directory
+    '''
+
+    cwd = os.getcwd()
+    print('[workspacelib]: Working directory is', cwd)
+
+
 def clear():
     '''
     Clears workspace folders.

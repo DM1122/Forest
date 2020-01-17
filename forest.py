@@ -1,9 +1,9 @@
 import csv
-import random
-import csvlib
 import graphviz
 import os
-import workspacelib
+import random
+
+import csvlib, workspacelib
 
 
 class Node:
@@ -162,10 +162,8 @@ class Tree:
         if not os.path.exists('drawings'):
             os.mkdir('drawings')
         
-
-
         dot = graphviz.Digraph(format='png')
-                
+        
         def traverse(node, idx=0):
             if node.parent == None:                 # root
                 dot.node(str(id(node)), node.data)
@@ -179,9 +177,13 @@ class Tree:
 
         traverse(self.root)
 
+        i = 0
+        print(os.listdir('drawings'))
         while os.path.exists('drawings/tree{}.png'.format(i)):
             i += 1
+            
         dot.render('drawings/tree{}'.format(i), view=False)
+
 
     def pathsToCSV(self):
         '''
@@ -277,6 +279,7 @@ class Tree:
             
 
 if __name__ == '__main__':
+    workspacelib.wd()
     workspacelib.clear()
     tree = Tree.fromCSV('data/Laptop2_tree.csv', headings=True)
     print(tree)
