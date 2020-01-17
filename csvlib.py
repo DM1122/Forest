@@ -52,3 +52,5 @@ if __name__ == '__main__':
     stylus = Stylus('test.csv')
     stylus.writeCell('x', [5,3])
     print(stylus.readCell([2,2]))
+    
+    
