@@ -3,30 +3,7 @@ import graphviz
 import os
 import random
 
-import csvlib, workspacelib
-
-
-class Node:
-
-    def __init__(self, data=None, parent=None, branches=None, index=None):
-        self.data = data
-        self.parent = parent
-        self.branches = branches
-        self.index = index
-    
-
-    def __str__(self):
-        parent = self.parent.index if self.parent != None else None
-        branches = len(self.branches) if self.branches != None else None
-
-        string = 'Node {} | Data ({}): {} | Parent: {} | Branches: {}'.format(
-            self.index,
-            type(self.data),
-            self.data,
-            parent,
-            branches)
-
-        return string
+import node
 
 
 class Tree:
@@ -278,9 +255,218 @@ class Tree:
         return distp
             
 
+    def updateHeight(self, node):
+        '''
+        Recursively updates the height attribute of each node in the tree starting from the node passed.
+        '''
+
+        if node != None:
+            node.height = max(self.updateHeight(node.left), self.updateHeight(node.right))
+            return node.height + 1
+        else:
+            return 1
+
+
+    def updateBalanceFactor(self, node):
+        '''
+        Recursively updates the balance factor attribute of each node in the tree starting from the node passed.
+        '''
+        if node != None:
+            if node.right != None and node.left != None:
+                node.bf = node.right.height - node.left.height
+            elif node.right != None and node.left == None:
+                node.bf = node.right.height
+            elif node.right == None and node.left != None:
+                node.bf = - node.left.height
+            elif node.right == None and node.left == None:
+                node.bf = 0
+
+            self.updateBalanceFactor(node.left)
+            self.updateBalanceFactor(node.right)
+        else:
+            return
+
+
+    def balanced_insert(self, node, curr = None):
+        curr = curr if curr else self.root
+        self.insert(node, curr)
+
+        # balancing
+        self.updateHeight(self.root)
+        self.updateBalanceFactor(self.root)
+
+    
+        self.balance(self.root)
+
+        # self.draw()
+
+
+    def balance(self, node):
+        '''
+        Recursivly balances tree using avl algorithms.
+        '''
+        if node == None:
+            return
+
+        if node.bf <= -2:
+                print('{}: {} {} '.format(node.val, node.bf, 'Rotating right'))
+                if node.left.bf <= -1:
+                    self.rightRotate(node)
+                elif node.left.bf >= 1:
+                    self.leftRotate(node.left)
+                    self.rightRotate(node)
+
+                self.updateHeight(self.root)
+                self.updateBalanceFactor(self.root)
+            
+        elif node.bf >= 2:
+                print('{}: {} {} '.format(node.val, node.bf, 'Rotating left'))
+                if node.right.bf >= 1:
+                    self.leftRotate(node)
+                elif node.right.bf <= -1:
+                    self.rightRotate(node.right)
+                    self.leftRotate(node)
+
+                self.updateHeight(self.root)
+                self.updateBalanceFactor(self.root)
+            
+
+        self.balance(node.left)
+        self.balance(node.right)
+
+
+    def leftRotate(self, node):
+        A = node
+        B = node.right
+        C = node.right.left
+
+        B.parent = A.parent
+        if A.parent == None:
+            self.root = B
+
+        if A.parent != None:
+            if A == A.parent.right:
+                A.parent.right = B
+            else:
+                A.parent.left = B
+
+
+        A.right = C
+
+        if C != None:
+            C.parent = A
+
+        B.left = A
+
+        A.parent = B
+
+
+    def rightRotate(self, node):
+        A = node
+        B = node.left
+        C = node.left.right
+
+        B.parent = A.parent
+        if A.parent == None:
+            self.root = B
+
+        if A.parent != None:
+            if A == A.parent.left:
+                A.parent.left = B
+            else:
+                A.parent.right = B
+
+        A.left = C
+
+        if C != None:
+            C.parent = A
+
+        B.right = A
+
+        A.parent = B
+
+
+    def search(self, query, curr = None):
+        curr = curr if curr else self.root
+
+        if query < curr.val[0]:
+            if curr.left is not None:
+                return self.search(query, curr.left)
+        elif query > curr.val[0]:
+            if curr.right is not None:
+                return self.search(query, curr.right)
+        else:
+            return curr
+
+
+    def insert(self, node, curr = None):
+        curr = curr if curr else self.root
+        # insert at correct location in BST
+        if node._val < curr._val:
+            if curr.left is not None:
+                self.insert(node, curr.left)
+            else:
+                node.parent = curr
+                curr.left = node
+        else:
+            if curr.right is not None:
+                self.insert(node, curr.right)
+            else:
+                node.parent = curr
+                curr.right = node
+        return
+
+
+    def draw(self):
+        if not os.path.exists('drawings'):
+            os.mkdir('drawings')
+
+        dot = graphviz.Digraph(format='png')
+
+        def traverse(node, idx=0):
+            if node.parent == None:                 # root
+                dot.node(str(id(node)), '{}\nbf:{}\nh:{}'.format(node.val[0],node.bf,node.height))
+            else:
+                dot.node(str(id(node)), '{}\nbf:{}\nh:{}'.format(node.val[0],node.bf,node.height))
+                dot.edge(str(id(node.parent)), str(id(node)))
+
+            if node.left != None:
+                traverse(node.left, idx)
+            if node.right != None:
+                traverse(node.right, idx)
+
+
+        traverse(self.root)
+
+        i = 0
+        while os.path.exists('drawings/tree{}.png'.format(i)):
+            i += 1
+
+        dot.render('drawings/tree{}'.format(i), view=False)
+
+
+    def is_balanced(self):
+        '''
+        Checks whether tree is balanced. Checks balance factor for every node. Returns true if all bfs are between -1 and 1.
+        '''
+
+        def traverse(node):
+            if node != None:
+                if node.bf <=-2 or node.bf >= 2:
+                    return False
+
+                if traverse(node.left) == False or traverse(node.right) == False:
+                    return False
+
+        result = traverse(self.root)
+        if result == None:
+            result = True
+
+        return result
+
+
+
+
+
 if __name__ == '__main__':
-    workspacelib.wd()
-    workspacelib.clear()
-    tree = Tree.fromCSV('data/Laptop2_tree.csv', headings=True)
-    print(tree)
-    tree.draw()
+    pass
