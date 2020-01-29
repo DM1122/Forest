@@ -32,13 +32,12 @@ class Node:
 
 class Tree:
 
-    def __init__(self, mapp, dims, root, leafs, size, headings=None):
-        self.map = mapp
-        self.dims = dims
-        self.root = root
-        self.leafs = leafs
-        self.size = size
-        self.headings = headings
+    def __init__(self):
+        self.map = None
+        self.dims = None
+        self.root = None
+        self.leafs = []
+        self.size = None
 
 
     def __str__(self):
@@ -50,6 +49,16 @@ class Tree:
         )
 
         return string
+
+   
+    def fromTextFile(self, filepath):
+        with open(filepath, 'r') as fil:
+            data = fil.read()
+            data = data.splitlines()
+        
+        for e in data:
+            self.insert(e)
+
 
 
     @classmethod
@@ -487,6 +496,13 @@ class Tree:
             result = True
 
         return result
+
+    def delete(self, query):
+        pass
+
+
+
+
 
 
 
