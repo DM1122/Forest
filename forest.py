@@ -1,7 +1,10 @@
 import csv
 import graphviz
-import os
 import random
+
+import sys
+sys.path.append('C:\\Users\\DMara\\Documents\\_Workbench\\Workspace')
+from workspacelib import Workspace
 
 
 
@@ -33,19 +36,16 @@ class Node:
 class Tree:
 
     def __init__(self):
-        self.map = None
-        self.dims = None
         self.root = None
-        self.leafs = []
         self.size = None
+        
 
 
     def __str__(self):
     
-        string = 'Tree Root: {} | Size: {} | Dims: {}'.format(
+        string = 'Tree Root: {} | Size: {}'.format(
             self.root.data,
             self.size,
-            self.dims
         )
 
         return string
@@ -62,7 +62,7 @@ class Tree:
 
 
     @classmethod
-    def fromCSV(cls, filename, headings=False):
+    def fromCSV(cls, filename, headings=False):         # WIP
         with open(filename, 'r') as f:
             reader = csv.reader(f, delimiter=',')
             data = [row for row in reader]
@@ -132,7 +132,7 @@ class Tree:
             return cls(mapp, dims, root, leafs, size)
 
 
-    def toCSV(self, filename):
+    def toCSV(self, filename):          # WIP
         '''
         Uses a pre-order traversal algorithm to print tree object to csv.
         '''
@@ -169,13 +169,14 @@ class Tree:
 
 
     def draw(self):
-        if not os.path.exists('drawings'):
-            os.mkdir('drawings')
-        
+        '''
+        Constructs visual representation of tree.
+        '''
+
         dot = graphviz.Digraph(format='png')
         
         def traverse(node, idx=0):
-            if node.parent == None:                 # root
+            if node.parent == None:
                 dot.node(str(id(node)), node.data)
             else:
                 dot.node(str(id(node)), node.data)
@@ -187,15 +188,11 @@ class Tree:
 
         traverse(self.root)
 
-        i = 0
-        print(os.listdir('drawings'))
-        while os.path.exists('drawings/tree{}.png'.format(i)):
-            i += 1
-            
-        dot.render('drawings/tree{}'.format(i), view=False)
+        path = Workspace.getOpen(file_name='tree', file_ext='.png', output_path='drawings')
+        dot.render(path, view=False)
 
 
-    def pathsToCSV(self):
+    def pathsToCSV(self):           # WIP
         '''
         Returns a csv containing all possible tree paths.
         '''
@@ -222,7 +219,7 @@ class Tree:
         print('Successfully saved paths to disk.')
     
 
-    def traversalCheck(self):
+    def traversalCheck(self):           # WIP
         print("--- Traversal Check ---")
         print("Leftmost traversal: ")
         node = self.root
@@ -245,7 +242,7 @@ class Tree:
         print("Traversal check complete.")
 
 
-    def randomWalk(self):
+    def randomWalk(self):           # WIP
         print('--- Random Walk ---')
         node = self.root
         while node != None:
@@ -258,7 +255,7 @@ class Tree:
         print('Random walk complete.')
 
 
-    def calcDist(self):
+    def calcDist(self):         # WIP
         '''
         Finds the nodal distribution of the tree across levels.
         Returns dict.
@@ -272,7 +269,7 @@ class Tree:
         return dist
         
 
-    def calcDistP(self):
+    def calcDistP(self):            # WIP
         '''
         Finds the nodal percentage distribution of the tree across levels.
         Returns dict.
