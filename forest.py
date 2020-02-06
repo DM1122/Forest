@@ -6,31 +6,31 @@ import sys
 sys.path.append('C:\\Users\\DMara\\Documents\\_Workbench\\Workspace')
 from workspacelib import Workspace
 
+verbose = 2
 
+# class Node:
 
-class Node:
-
-    def __init__(self, data=None, parent=None, branches=None, height=1, bf=0, index=None):
-        self.data = data
-        self.parent = parent
-        self.branches = branches
-        self.height = height
-        self.bf = bf
-        self.index = index
+#     def __init__(self, data=None, parent=None, branches=None, height=1, bf=0, index=None):
+#         self.data = data
+#         self.parent = parent
+#         self.branches = branches
+#         self.height = height
+#         self.bf = bf
+#         self.index = index
     
 
-    def __str__(self):
-        parent = self.parent.index if self.parent != None else None
-        branches = len(self.branches) if self.branches != None else None
+#     def __str__(self):
+#         parent = self.parent.index if self.parent != None else None
+#         branches = len(self.branches) if self.branches != None else None
 
-        string = 'Node {} | Data ({}): {} | Parent: {} | Branches: {}'.format(
-            self.index,
-            type(self.data),
-            self.data,
-            parent,
-            branches)
+#         string = 'Node {} | Data ({}): {} | Parent: {} | Branches: {}'.format(
+#             self.index,
+#             type(self.data),
+#             self.data,
+#             parent,
+#             branches)
 
-        return string
+#         return string
 
 
 class Tree:
@@ -498,7 +498,100 @@ class Tree:
         pass
 
 
+class NodeB:
+    '''
+    A binary node class.
+    '''
 
+    def __init__(self, data=None, left=None, right=None, parent=None, h=1, bf=0):
+        self.data = data
+        self.left = left
+        self.right = right
+        self.parent = parent
+        self.h = h
+        self.bf = bf
+
+
+    def __str__(self):
+        string = 'NodeB {} | Data ({}): {} | Left: {} | Right: {} | Parent: {} | Height: {}'.format(
+            id(self),
+            type(self.data),
+            self.data,
+            self.left,
+            self.right,
+            self.parent,
+            self.h,
+            self.bf)
+
+
+        return string
+
+
+class BSTree:
+    '''
+    A binary search tree implementation.
+    '''
+
+    def __init__(self):
+        self.root = None
+
+
+    def __str__(self):
+        string = 'Tree {} | Root: {}'.format(
+            id(self),
+            self.root)
+
+
+        return string
+
+   
+    def fromTextFile(self, filepath):
+        with open(filepath, 'r') as fil:
+            data = fil.read()
+            data = data.splitlines()
+        
+        for e in data:
+            self.insert(e)
+
+
+
+
+
+    def insert(self, data):
+        print('[forest]: Inserting {}'.format(data)) if verbose>=1 else False
+
+        node = NodeB(data=data)
+
+        if self.root == None:
+            self.root = node
+            inserted = True
+        else:
+            inserted = False
+            curr = self.root
+        
+        while not inserted:
+            if node.data < curr.data:
+                if curr.left == None:
+                    curr.left == node
+                    node.parent = curr.left
+                    
+                    inserted = True
+                else:
+                    print('[forest]: Moving insert left') if verbose>=2 else False
+                    curr = curr.left
+
+            elif node.data > curr.data:
+                if curr.right == None:
+                    curr.right = node
+                    node.parent = curr.right
+                    inserted = True
+                else:
+                    print('[forest]: Moving insert right') if verbose>=2 else False
+                    curr = curr.right
+
+                
+
+        
 
 
 
