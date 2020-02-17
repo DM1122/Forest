@@ -515,7 +515,7 @@ class NodeB:
 
 
     def __str__(self):
-        string = 'NodeB {} | Data ({}): {} | Left: {} | Right: {} | Parent: {} | Height: {}'.format(
+        string = 'NodeB {} | Data ({}): {} | Left: {} | Right: {} | Parent: {} | Height: {} | BF: {}'.format(
             id(self),
             type(self.data),
             self.data,
@@ -574,20 +574,19 @@ class BSTree:
 
         node = NodeB(data=data)
 
-        #region root condition
         if self.root == None:
             self.root = node
             inserted = True
         else:
             inserted = False
             curr = self.root
-        #endregion
+
 
         while not inserted:
             if node.data < curr.data:
                 if curr.left == None:
-                    curr.left == node
-                    node.parent = curr.left
+                    curr.left = node
+                    node.parent = curr
                     
                     inserted = True
                 else:
@@ -597,25 +596,57 @@ class BSTree:
             elif node.data > curr.data:
                 if curr.right == None:
                     curr.right = node
-                    node.parent = curr.right
+                    node.parent = curr
                     inserted = True
                 else:
                     print('[forest]: Moving insert right') if verbose>=2 else False
                     curr = curr.right
 
 
+    def traverse(self, mode, foo=None):
 
-    def preOrder(node, foo=None):
-        nodes = []
+        def preOrder(node, foo=None):
+            nodes = []
 
-        if node:
-            foo(node)
-            nodes.append(node)
-            nodes.extend(preOrder(node.left))
-            nodes.extend(preOrder(node.right))
-        
-        return nodes
+            if node:
+                foo(node)
+                nodes.append(node)
+                nodes.extend(preOrder(node.left, foo))
+                nodes.extend(preOrder(node.right, foo))
+            
+            return nodes
 
+        def inOrder(node, foo=None):
+            nodes = []
+
+            if node:
+                nodes.extend(inOrder(node.left, foo))
+                foo(node)
+                nodes.append(node)
+                nodes.extend(inOrder(node.right, foo))
+            
+            return nodes
+
+        def postOrder(node, foo=None):
+            nodes = []
+
+            if node:
+                nodes.extend(postOrder(node.left, foo))
+                nodes.extend(postOrder(node.right, foo))
+                foo(node)
+                nodes.append(node)
+            
+            return nodes
+
+
+        if mode == 'pre':
+            return preOrder(self.root, foo)
+        elif mode == 'in':
+            return inOrder(self.root, foo)
+        elif mode == 'post':
+            return postOrder(self.root, foo)
+        else:
+            raise ValueError('traversal mode not recognized. Use either "pre", "in", or "post"')
 
 
     def draw(self):
@@ -624,61 +655,36 @@ class BSTree:
         '''
         
         graph = graphviz.Digraph(format='png')
+        graph.attr('node', shape='box')
 
         def draw_link(node):
-            graph.node(str(id(node)), label=str(node.data)[:12])
+            graph.node(str(id(node)), label=
+            '{}\nh: {}\nbf: {}\n'.format(
+                str(node.data)[:12],
+                str(node.h),
+                str(node.bf)))
 
             if node.left:
                 graph.edge(str(id(node)), str(id(node.left)))
             else:
+                null = str(random.randint(1000000000000,9999999999999))
                 graph.attr('node', shape='point')
-                graph.node('null')
-                graph.edge(str(id(node)), 'null')
-                graph.attr('node', shape='ellipse')
+                graph.edge(str(id(node)), null)
+                graph.attr('node', shape='box')
 
             if node.right:
                 graph.edge(str(id(node)), str(id(node.right)))
             else:
+                null = str(random.randint(1000000000000,9999999999999))
                 graph.attr('node', shape='point')
-                graph.node('null')
-                graph.edge(str(id(node)), 'null')
-                graph.attr('node', shape='ellipse')
+                graph.edge(str(id(node)), null)
+                graph.attr('node', shape='box')
             
 
-        self.preOrder(self.root, foo=draw_link)
+        self.traverse(mode='pre', foo=draw_link)
 
-        path = Workspace.getOpen(file_name='tree', file_ext='.png', output_path='drawings')
-        dot.render(path, view=False)
-
-
-
-
-
-
-
-
-        # def traverse(node):
-        #     idd = lambda x: str((id(x)))
-        #     cargo = lambda x: str(x.data)[:12]
-
-        #     if node:
-        #         idd = 
-
-        #         if node.parent:
-        #             graph.node(idd(node), cargo(node))
-        #             graph.edge(idd(node.parent), idd(node))
-        #         else:
-        #             graph.node(idd(node), cargo(node)))
-
-        #         traverse(node.left)
-        #         traverse(node.right)
-
-        #     else:
-                
-
-
-        # traverse(self.root)
-
+        path = workspacelib.Workspace.getOpen(file_name='tree', output_path='temp/drawings')
+        graph.render(path, view=False)
 
 
 
@@ -690,4 +696,4 @@ class BSTree:
 
 
 if __name__ == '__main__':
-    
+    pass
