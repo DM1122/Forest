@@ -581,7 +581,6 @@ class BSTree:
             inserted = False
             curr = self.root
 
-
         while not inserted:
             if node.data < curr.data:
                 if curr.left == None:
@@ -604,12 +603,12 @@ class BSTree:
 
 
     def traverse(self, mode, foo=None):
-
+        
         def preOrder(node, foo=None):
             nodes = []
 
             if node:
-                foo(node)
+                foo(node) if foo else False
                 nodes.append(node)
                 nodes.extend(preOrder(node.left, foo))
                 nodes.extend(preOrder(node.right, foo))
@@ -621,7 +620,7 @@ class BSTree:
 
             if node:
                 nodes.extend(inOrder(node.left, foo))
-                foo(node)
+                foo(node) if foo else False
                 nodes.append(node)
                 nodes.extend(inOrder(node.right, foo))
             
@@ -633,7 +632,7 @@ class BSTree:
             if node:
                 nodes.extend(postOrder(node.left, foo))
                 nodes.extend(postOrder(node.right, foo))
-                foo(node)
+                foo(node) if foo else False
                 nodes.append(node)
             
             return nodes
@@ -685,13 +684,6 @@ class BSTree:
 
         path = workspacelib.Workspace.getOpen(file_name='tree', output_path='temp/drawings')
         graph.render(path, view=False)
-
-
-
-
-
-
-
 
 
 
