@@ -1,12 +1,14 @@
 import csv
 import graphviz
 import random
+import json
+import progress.bar
 
 import sys
-sys.path.append('C:\\Users\\DMara\\Documents\\_Workbench\\Workspace')
-from workspacelib import Workspace
+sys.path.append('D:\\Workbench\\.repos')
+from Workspace import workspacelib
 
-verbose = 2
+verbose = 0
 
 # class Node:
 
@@ -554,7 +556,17 @@ class BSTree:
             self.insert(e)
 
 
-
+    def fromJSON(self, filepath):
+        with open(filepath, 'r') as fil:
+            data = json.load(fil)
+        
+        
+        bar = progress.bar.Bar('Inserting JSON', max=len(data))
+        for key, value in data.items():
+            cargo = (key, value)
+            self.insert(data=cargo)
+            bar.next()
+        bar.finish()
 
 
     def insert(self, data):
@@ -562,13 +574,15 @@ class BSTree:
 
         node = NodeB(data=data)
 
+        #region root condition
         if self.root == None:
             self.root = node
             inserted = True
         else:
             inserted = False
             curr = self.root
-        
+        #endregion
+
         while not inserted:
             if node.data < curr.data:
                 if curr.left == None:
@@ -589,12 +603,91 @@ class BSTree:
                     print('[forest]: Moving insert right') if verbose>=2 else False
                     curr = curr.right
 
+
+
+    def preOrder(node, foo=None):
+        nodes = []
+
+        if node:
+            foo(node)
+            nodes.append(node)
+            nodes.extend(preOrder(node.left))
+            nodes.extend(preOrder(node.right))
+        
+        return nodes
+
+
+
+    def draw(self):
+        '''
+        Constructs visual representation of BSTree.
+        '''
+        
+        graph = graphviz.Digraph(format='png')
+
+        def draw_link(node):
+            graph.node(str(id(node)), label=str(node.data)[:12])
+
+            if node.left:
+                graph.edge(str(id(node)), str(id(node.left)))
+            else:
+                graph.attr('node', shape='point')
+                graph.node('null')
+                graph.edge(str(id(node)), 'null')
+                graph.attr('node', shape='ellipse')
+
+            if node.right:
+                graph.edge(str(id(node)), str(id(node.right)))
+            else:
+                graph.attr('node', shape='point')
+                graph.node('null')
+                graph.edge(str(id(node)), 'null')
+                graph.attr('node', shape='ellipse')
+            
+
+        self.preOrder(self.root, foo=draw_link)
+
+        path = Workspace.getOpen(file_name='tree', file_ext='.png', output_path='drawings')
+        dot.render(path, view=False)
+
+
+
+
+
+
+
+
+        # def traverse(node):
+        #     idd = lambda x: str((id(x)))
+        #     cargo = lambda x: str(x.data)[:12]
+
+        #     if node:
+        #         idd = 
+
+        #         if node.parent:
+        #             graph.node(idd(node), cargo(node))
+        #             graph.edge(idd(node.parent), idd(node))
+        #         else:
+        #             graph.node(idd(node), cargo(node)))
+
+        #         traverse(node.left)
+        #         traverse(node.right)
+
+        #     else:
                 
 
-        
+
+        # traverse(self.root)
+
+
+
+
+
+
+
 
 
 
 
 if __name__ == '__main__':
-    pass
+    
