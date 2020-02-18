@@ -10,29 +10,30 @@ from Workspace import workspacelib
 
 verbose = 0
 
-# class Node:
 
-#     def __init__(self, data=None, parent=None, branches=None, height=1, bf=0, index=None):
-#         self.data = data
-#         self.parent = parent
-#         self.branches = branches
-#         self.height = height
-#         self.bf = bf
-#         self.index = index
+class Node:
+
+    def __init__(self, data=None, parent=None, branches=None, height=1, bf=0, index=None):
+        self.data = data
+        self.parent = parent
+        self.branches = branches
+        self.height = height
+        self.bf = bf
+        self.index = index
     
 
-#     def __str__(self):
-#         parent = self.parent.index if self.parent != None else None
-#         branches = len(self.branches) if self.branches != None else None
+    def __str__(self):
+        parent = self.parent.index if self.parent != None else None
+        branches = len(self.branches) if self.branches != None else None
 
-#         string = 'Node {} | Data ({}): {} | Parent: {} | Branches: {}'.format(
-#             self.index,
-#             type(self.data),
-#             self.data,
-#             parent,
-#             branches)
+        string = 'Node {} | Data ({}): {} | Parent: {} | Branches: {}'.format(
+            self.index,
+            type(self.data),
+            self.data,
+            parent,
+            branches)
 
-#         return string
+        return string
 
 
 class Tree:
@@ -60,7 +61,6 @@ class Tree:
         
         for e in data:
             self.insert(e)
-
 
 
     @classmethod
@@ -538,7 +538,7 @@ class BSTree:
         self.root = None
 
 
-    def __str__(self):
+    def __str__(self):          # not working
         string = 'Tree {} | Root: {}'.format(
             id(self),
             self.root)
@@ -648,6 +648,36 @@ class BSTree:
             raise ValueError('traversal mode not recognized. Use either "pre", "in", or "post"')
 
 
+    def search(self, query):
+        '''
+        Searches BST for query and returns node. Otherwise returns false.
+        '''
+
+        if query == self.root.data[0]:
+            result = self.root
+            found = True
+        else:
+            curr = self.root
+            found = False
+
+        while not found:
+            if curr:
+                if query == curr.data[0]:
+                    result = curr
+                    found = True
+                elif query < curr.data[0]:
+                    curr = curr.left
+                elif query > curr.data[0]:
+                    curr = curr.right
+            else:
+                result = False
+                break
+        
+
+        return result
+
+
+
     def draw(self):
         '''
         Constructs visual representation of BSTree.
@@ -688,4 +718,6 @@ class BSTree:
 
 
 if __name__ == '__main__':
-    pass
+    tree = BSTree()
+    tree.fromJSON('data/dictionary_sample.json')
+
