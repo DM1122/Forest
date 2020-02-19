@@ -602,7 +602,7 @@ class BSTree:
                     curr = curr.right
 
 
-    def traverse(self, mode, foo=None):
+    def traverse(self, mode=None, foo=None):
         
         def preOrder(node, foo=None):
             nodes = []
@@ -638,7 +638,7 @@ class BSTree:
             return nodes
 
 
-        if mode == 'pre':
+        if mode == 'pre' or mode == None:
             return preOrder(self.root, foo)
         elif mode == 'in':
             return inOrder(self.root, foo)
@@ -715,6 +715,9 @@ class BSTree:
         path = workspacelib.Workspace.getOpen(file_name='tree', output_path='temp/drawings')
         graph.render(path, view=False)
 
+
+    def getSize(self):
+        return len(self.traverse())
 
 
 if __name__ == '__main__':
