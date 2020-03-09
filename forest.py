@@ -602,7 +602,7 @@ class BSTree:
                     curr = curr.right
 
 
-    def traverse(self, mode=None, foo=None):
+    def traverse(self, node=self.root, mode=None, foo=None):
         
         def preOrder(node, foo=None):
             nodes = []
@@ -637,15 +637,38 @@ class BSTree:
             
             return nodes
 
+        def shootRight(node, foo=None):
+            nodes = []
+
+            if node:
+                foo(node) if foo else False
+                nodes.append(node)
+                nodes.extend(shootRight(node.right, foo))
+            
+            return nodes
+
+        def shootLeft(node, foo=None):
+            nodes = []
+
+            if node:
+                foo(node) if foo else False
+                nodes.append(node)
+                nodes.extend(shootLeft(node.left, foo))
+            
+            return nodes
 
         if mode == 'pre' or mode == None:
-            return preOrder(self.root, foo)
+            return preOrder(node, foo)
         elif mode == 'in':
-            return inOrder(self.root, foo)
+            return inOrder(node, foo)
         elif mode == 'post':
-            return postOrder(self.root, foo)
+            return postOrder(node, foo)
+        elif mode == 'left':
+            return shootLeft()
+        elif mode == 'right':
+            return shootRight()
         else:
-            raise ValueError('traversal mode not recognized. Use either "pre", "in", or "post"')
+            raise ValueError('Traversal mode not recognized. Use either "pre", "in", "post", "left", "right"')
 
 
     def search(self, query):
@@ -676,6 +699,18 @@ class BSTree:
 
         return result
 
+
+    def prec(self, query):
+        '''
+        Returns predecessor of query.
+        '''
+
+    def succ(self, query):
+        '''
+        Returns successor of query.
+        '''
+
+        if query.left:
 
 
     def draw(self):
