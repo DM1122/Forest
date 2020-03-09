@@ -515,16 +515,15 @@ class NodeB:
 
 
     def __str__(self):
-        string = 'NodeB {} | Data ({}): {} | Left: {} | Right: {} | Parent: {} | Height: {} | BF: {}'.format(
+        string = 'NodeB #{} | Data ({}): {} | Parent: {} | Left: {} | Right: {} | Height: {} | BF: {}'.format(
             id(self),
             type(self.data),
             self.data,
-            self.left,
-            self.right,
-            self.parent,
+            self.parent.data if self.parent else None,
+            self.left.data if self.left else None,
+            self.right.data if self.right else None,
             self.h,
             self.bf)
-
 
         return string
 
@@ -538,16 +537,16 @@ class BSTree:
         self.root = None
 
 
-    def __str__(self):          # not working
-        string = 'Tree {} | Root: {}'.format(
+    def __str__(self):
+        string = 'BSTree #{} | Size: {} | Root: {}'.format(
             id(self),
-            self.root)
-
+            self.getSize(),
+            self.root.data)
 
         return string
 
    
-    def fromTextFile(self, filepath):
+    def fromTXT(self, filepath):
         with open(filepath, 'r') as fil:
             data = fil.read()
             data = data.splitlines()
@@ -602,8 +601,8 @@ class BSTree:
                     curr = curr.right
 
 
-    def traverse(self, node=self.root, mode=None, foo=None):
-        
+    def traverse(self, node, mode=None, foo=None):
+
         def preOrder(node, foo=None):
             nodes = []
 
@@ -700,17 +699,20 @@ class BSTree:
         return result
 
 
-    def prec(self, query):
+    def prec(self, node):
         '''
-        Returns predecessor of query.
-        '''
-
-    def succ(self, query):
-        '''
-        Returns successor of query.
+        Returns predecessor of node.
         '''
 
-        if query.left:
+        if node.left:
+            result = self.traverse(node.left, mode='right')[-1]
+
+    def succ(self, node):
+        '''
+        Returns successor of node.
+        '''
+        pass
+
 
 
     def draw(self):
@@ -745,17 +747,25 @@ class BSTree:
                 graph.attr('node', shape='box')
             
 
-        self.traverse(mode='pre', foo=draw_link)
+        self.traverse(self.root, mode='pre', foo=draw_link)
 
-        path = workspacelib.Workspace.getOpen(file_name='tree', output_path='temp/drawings')
+        path = workspacelib.Workspace.getOpen(file_name='tree', file_ext='.png', output_path='temp/drawings')
         graph.render(path, view=False)
 
 
     def getSize(self):
-        return len(self.traverse())
+        return len(self.traverse(self.root))
 
 
 if __name__ == '__main__':
     tree = BSTree()
-    tree.fromJSON('data/dictionary_sample.json')
+    tree.fromTXT('data/test.txt')
+    node = tree.search('A')
+    print(node)
+    print(tree)
+    result = tree.prec(node)
+    print('Precursor:',result)
+    result = tree.succ(node)
+    print('Successor:', result)
+
 
