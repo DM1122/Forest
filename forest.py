@@ -515,8 +515,8 @@ class NodeB:
 
 
     def __str__(self):
-        string = 'NodeB #{} | Data ({}): {} | Parent: {} | Left: {} | Right: {} | Height: {} | BF: {}'.format(
-            id(self),
+        string = 'NodeB {} | Data ({}): {} | Parent: {} | Left: {} | Right: {} | Height: {} | BF: {}'.format(
+            hex(id(self)),
             type(self.data),
             self.data,
             self.parent.data if self.parent else None,
@@ -538,8 +538,8 @@ class BSTree:
 
 
     def __str__(self):
-        string = 'BSTree #{} | Size: {} | Root: {}'.format(
-            id(self),
+        string = 'BSTree {} | Size: {} | Root: {}'.format(
+            hex(id(self)),
             self.getSize(),
             self.root.data)
 
@@ -601,7 +601,8 @@ class BSTree:
                     curr = curr.right
 
 
-    def traverse(self, node, mode=None, foo=None):
+    def traverse(self, node=None, mode=None, foo=None):
+        node = self.root if node == None else node
 
         def preOrder(node, foo=None):
             nodes = []
@@ -636,16 +637,6 @@ class BSTree:
             
             return nodes
 
-        def shootRight(node, foo=None):
-            nodes = []
-
-            if node:
-                foo(node) if foo else False
-                nodes.append(node)
-                nodes.extend(shootRight(node.right, foo))
-            
-            return nodes
-
         def shootLeft(node, foo=None):
             nodes = []
 
@@ -656,6 +647,17 @@ class BSTree:
             
             return nodes
 
+        def shootRight(node, foo=None):
+            nodes = []
+
+            if node:
+                foo(node) if foo else False
+                nodes.append(node)
+                nodes.extend(shootRight(node.right, foo))
+            
+            return nodes
+
+
         if mode == 'pre' or mode == None:
             return preOrder(node, foo)
         elif mode == 'in':
@@ -663,9 +665,9 @@ class BSTree:
         elif mode == 'post':
             return postOrder(node, foo)
         elif mode == 'left':
-            return shootLeft()
+            return shootLeft(node, foo)
         elif mode == 'right':
-            return shootRight()
+            return shootRight(node, foo)
         else:
             raise ValueError('Traversal mode not recognized. Use either "pre", "in", "post", "left", "right"')
 
@@ -705,13 +707,30 @@ class BSTree:
         '''
 
         if node.left:
-            result = self.traverse(node.left, mode='right')[-1]
+            return self.traverse(node.left, mode='right')[-1]
+        else:
+            while node != None:
+                if node.parent and node == node.parent.right:
+                    return node.parent
+                node = node.parent
+            
+            return False
+
 
     def succ(self, node):
         '''
         Returns successor of node.
         '''
-        pass
+
+        if node.right:
+            return self.traverse(node.right, mode='left')[-1]
+        else:
+            while node != None:
+                if node.parent and node == node.parent.left:
+                    return node.parent
+                node = node.parent
+            
+            return False
 
 
 
@@ -754,18 +773,16 @@ class BSTree:
 
 
     def getSize(self):
-        return len(self.traverse(self.root))
+        return len(self.traverse())
 
 
 if __name__ == '__main__':
     tree = BSTree()
     tree.fromTXT('data/test.txt')
-    node = tree.search('A')
-    print(node)
-    print(tree)
+    node = tree.search('D')
     result = tree.prec(node)
-    print('Precursor:',result)
+    print('Precursor:',result.data)
     result = tree.succ(node)
-    print('Successor:', result)
+    print('Successor:', result.data)
 
 
