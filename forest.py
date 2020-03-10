@@ -496,8 +496,6 @@ class Tree:
 
         return result
 
-    def delete(self, query):
-        pass
 
 
 class NodeB:
@@ -526,6 +524,18 @@ class NodeB:
             self.bf)
 
         return string
+
+    def getSide(self):
+        '''
+        Checks wether node is left subtree or right subtree of parent.
+        Returns 0 if left, 1 if right. None if parent does not exist.
+        '''
+
+        if self.parent:
+            if self == self.parent.left:
+                return 0
+            elif self == self.parent.right:
+                return 1
 
 
 class BSTree:
@@ -599,6 +609,71 @@ class BSTree:
                 else:
                     print('[forest]: Moving insert right') if verbose>=2 else False
                     curr = curr.right
+
+    def delete(self, node):
+        if node.left == None and node.right == None:        # node has no children
+            node = None
+        elif (node.left == None) != (node.right == None):   # node has only one child
+            if node.left == None:                           # only child must be right
+                node.right.parent = node.parent
+
+                if node == node.parent.right:
+                    node.parent.right = node.right
+                elif node == node.parent.left:
+                    node.parent.left = node.right
+
+                node = None
+
+            elif node.right == None:                        # only child must be left
+                node.left.parent = node.parent
+
+                if node == node.parent.right:
+                    node.parent.right = node.left
+                elif node == node.parent.left:
+                    node.parent.left = node.left
+
+                node = None
+
+        elif node.left != None and node.right != None:      # node has two children
+            self.swap(node, self.succ(node))
+            node = None
+
+
+    def swap(self, nodeA, nodeB):
+        '''
+        Swaps the data of any two nodes in the tree.
+        '''
+
+        nodeA.data, nodeB.data = nodeB.data, nodeA.data
+
+        # # swap parent-node refs
+        # if nodeA.getSide() == 0:
+        #     nodeA.parent.left = nodeB
+        # elif nodeA.getSide() == 1:
+        #     nodeA.parent.right = nodeB
+        
+        # if nodeB.getSide() == 0:
+        #     nodeB.parent.left = nodeA
+        # elif nodeB.getSide() == 1:
+        #     nodeB.parent.right = nodeA
+
+        # # swap node-parent refs
+        # nodeA.parent, nodeB.parent = nodeB.parent, nodeA.parent
+
+        # # swap child-node refs
+        # if nodeA.left:
+        #     nodeA.left.parent = nodeB
+        # if nodeA.right:
+        #     nodeA.right.parent = nodeB
+
+        # if nodeB.left:
+        #     nodeB.left.parent = nodeA
+        # if nodeB.right:
+        #     nodeB.right.parent = nodeA
+
+        # # swap node-child refs
+        # nodeA.left, nodeB.left = nodeB.left, nodeA.left
+        # nodeA.right, nodeB.right = nodeB.right, nodeA.right
 
 
     def traverse(self, node=None, mode=None, foo=None):
@@ -733,7 +808,6 @@ class BSTree:
             return False
 
 
-
     def draw(self):
         '''
         Constructs visual representation of BSTree.
@@ -779,10 +853,8 @@ class BSTree:
 if __name__ == '__main__':
     tree = BSTree()
     tree.fromTXT('data/test.txt')
-    node = tree.search('D')
-    result = tree.prec(node)
-    print('Precursor:',result.data)
-    result = tree.succ(node)
-    print('Successor:', result.data)
+    nodeA = tree.search('A')
+    nodeB = tree.search('B')
+
 
 
