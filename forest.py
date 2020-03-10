@@ -610,33 +610,45 @@ class BSTree:
                     print('[forest]: Moving insert right') if verbose>=2 else False
                     curr = curr.right
 
-    def delete(self, node):
+    def delete(self, node):     #WIP
+
+        def deleteNoChildren(node):
+            node = None
+        
+        def deleteOneChild(node):
+            child = node.left if node.left else child = node.right
+            self.swap(node, child)
+            child = None
+
         if node.left == None and node.right == None:        # node has no children
             node = None
         elif (node.left == None) != (node.right == None):   # node has only one child
             if node.left == None:                           # only child must be right
                 node.right.parent = node.parent
 
-                if node == node.parent.right:
-                    node.parent.right = node.right
-                elif node == node.parent.left:
+                if node.getSide() == 0:
                     node.parent.left = node.right
+                elif node.getSide() == 1:
+                    node.parent.right = node.right
 
-                node = None
+                
 
             elif node.right == None:                        # only child must be left
                 node.left.parent = node.parent
 
-                if node == node.parent.right:
-                    node.parent.right = node.left
-                elif node == node.parent.left:
+                if node.getSide() == 0:
                     node.parent.left = node.left
+                elif node.getSide() == 1:
+                    node.parent.right = node.left
 
                 node = None
 
         elif node.left != None and node.right != None:      # node has two children
-            self.swap(node, self.succ(node))
-            node = None
+            nodeA = node
+            nodeB = self.succ(node)
+            self.swap(nodeA, nodeB)
+            nodeB = None
+            
 
 
     def swap(self, nodeA, nodeB):
@@ -855,6 +867,8 @@ if __name__ == '__main__':
     tree.fromTXT('data/test.txt')
     nodeA = tree.search('A')
     nodeB = tree.search('B')
+
+    tree.delete(nodeA)
 
 
 
