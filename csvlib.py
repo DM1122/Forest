@@ -1,11 +1,16 @@
 import csv
 import os
+import progress.bar
 
 class CSVProcessor:
-    def __init__(self, inputpath, outputpath, delim=','):
-        with open(inputpath, 'r') as fobj:
+    def __init__(self, inpath, outpath, delim=','):
+        self.inpath = inpath
+        self.outpath = outpath
+
+        with open(self.inpath, 'r') as fobj:
             reader = csv.reader(fobj, delimiter=delim)
             self.data = [row for row in reader]
+
 
     def __str__(self):
         info_str = 'CSV File {} | Size: {}\n'.format(
@@ -27,30 +32,59 @@ class CSVProcessor:
         
         output_str = info_str+data_str
         reutur
-    
+
+
     def replaceAll(self, query, string):
         for idx, row in enumerate(self.data):
             for idy, col in enumerate(row):
                 self.data[idx][idy] = col.replace(query, string)
 
+
+    def insertChar(self, char, key):
+        '''
+        Inserts char at index following first occurence of key in strings fields.
+        Useful for configuring delimeters.
+        '''
+
+        for idx, row in enumerate(self.data):
+            for idy, col in enumerate(row):
+                index = col.find(key)
+                self.data[idx][idy] = col[:index+1] + char + col[index+1:]
+
+
     def export(self):
-        pass
+        with open(self.outpath, 'w', newline='') as fobj:
+            writer = csv.writer(fobj)
+            writer.writerows(self.data)
+
 
     def removeSpace(self):
         for idx, row in enumerate(self.data):
             for idy, col in enumerate(row):
                 self.data[idx][idy] = col.strip()
 
+
     def dropEmptyRows(self):
         for idx, row in enumerate(self.data):
             if row == []:
                 del self.data[idx]
+
 
     def dropEmptyFields(self):
         for idx, row in enumerate(self.data):
             for idy, col in enumerate(row):
                 if col == '':
                     del self.data[idx][idy]
+
+
+    def stringsToNum(self):     # WIP
+        for idx, row in enumerate(self.data):
+            for idy, col in enumerate(row):
+                if col.isdigit() or col.isdecimal():
+                    try:
+                        self.data[idx][idy] = int(col)
+                    except ValueError:
+                        self.data[idx][idy] = float(col)
 
 
 class Stylus:
@@ -97,15 +131,34 @@ class Stylus:
         self.file.seek(0, os.SEEK_SET)
         self.writer.writerows(content)
         
+def mergeCSV(inpath, outpath):
+    filenames = os.listdir(inpath)
+
+    data = []
+
+    bar = progress.bar.Bar('Merging CSV files', max=len(filenames))
+    for filename in filenames:
+        with open(inpath+filename, 'r') as fobj:
+            reader = csv.reader(fobj)
+            data.extend([row for row in reader])
+        bar.next()
+    bar.finish()
+    
+    # export
+    with open(outpath, 'w', newline='') as fobj:
+        writer = csv.writer(fobj)
+        writer.writerows(data)
 
 
 if __name__ == '__main__':
-    processor = CSVProcessor('data/csv/test.csv','data/proc/out.csv')
-    print(processor.data)
-    processor.removeSpace()
-    processor.dropEmptyRows()
-    processor.replaceAll(query='"',string='')
-    print('AFTER===============')
-    print(processor.data)
+    # mergeCSV('data/csv/', 'data/merge/merge.csv')
+
+    CSVProc = CSVProcessor('data/merge.csv','data/out.csv', delim='@')
+    CSVProc.removeSpace()
+    CSVProc.dropEmptyRows()
+    CSVProc.replaceAll(query='\\"',string='')
+    CSVProc.insertChar(char='@', key=')')
+    CSVProc.export()
+
     
     

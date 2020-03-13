@@ -619,6 +619,7 @@ class BSTree:
                     print('[forest]: Moving insert right') if verbose>=2 else False
                     curr = curr.right
 
+
     def delete(self, node):     #WIP
 
         def deleteNoChildren(node):
