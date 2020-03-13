@@ -564,6 +564,15 @@ class BSTree:
         for e in data:
             self.insert(e)
 
+    def fromCSV(self, filepath):
+        with open(filepath, 'r') as fil:
+            reader = csv.reader(fil, delimiter='\t')
+            data = [row for row in reader]
+
+            bar = progress.bar.Bar('Inserting CSV "{}"'.format(filepath), max=len(data))
+            for row in data:
+                cargo = (data[0], data[1]) ### Look into allowing an arbitrary number of elements here
+
 
     def fromJSON(self, filepath):
         with open(filepath, 'r') as fil:
@@ -616,38 +625,39 @@ class BSTree:
             node = None
         
         def deleteOneChild(node):
-            child = node.left if node.left else child = node.right
-            self.swap(node, child)
-            child = None
+            # child = node.left if node.left else child = node.right
+            # self.swap(node, child)
+            # child = None
+            pass
 
-        if node.left == None and node.right == None:        # node has no children
-            node = None
-        elif (node.left == None) != (node.right == None):   # node has only one child
-            if node.left == None:                           # only child must be right
-                node.right.parent = node.parent
+        # if node.left == None and node.right == None:        # node has no children
+        #     node = None
+        # elif (node.left == None) != (node.right == None):   # node has only one child
+        #     if node.left == None:                           # only child must be right
+        #         node.right.parent = node.parent
 
-                if node.getSide() == 0:
-                    node.parent.left = node.right
-                elif node.getSide() == 1:
-                    node.parent.right = node.right
+        #         if node.getSide() == 0:
+        #             node.parent.left = node.right
+        #         elif node.getSide() == 1:
+        #             node.parent.right = node.right
 
                 
 
-            elif node.right == None:                        # only child must be left
-                node.left.parent = node.parent
+        #     elif node.right == None:                        # only child must be left
+        #         node.left.parent = node.parent
 
-                if node.getSide() == 0:
-                    node.parent.left = node.left
-                elif node.getSide() == 1:
-                    node.parent.right = node.left
+        #         if node.getSide() == 0:
+        #             node.parent.left = node.left
+        #         elif node.getSide() == 1:
+        #             node.parent.right = node.left
 
-                node = None
+        #         node = None
 
-        elif node.left != None and node.right != None:      # node has two children
-            nodeA = node
-            nodeB = self.succ(node)
-            self.swap(nodeA, nodeB)
-            nodeB = None
+        # elif node.left != None and node.right != None:      # node has two children
+        #     nodeA = node
+        #     nodeB = self.succ(node)
+        #     self.swap(nodeA, nodeB)
+        #     nodeB = None
             
 
 

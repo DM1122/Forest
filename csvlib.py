@@ -1,8 +1,59 @@
 import csv
 import os
 
-class Stylus:
+class CSVProcessor:
+    def __init__(self, inputpath, outputpath, delim=','):
+        with open(inputpath, 'r') as fobj:
+            reader = csv.reader(fobj, delimiter=delim)
+            self.data = [row for row in reader]
 
+    def __str__(self):
+        info_str = 'CSV File {} | Size: {}\n'.format(
+            hex(id(self.data)),
+            len(self.data))
+
+        if len(self.data) <= 10:
+            data_str = ''.join(self.data)
+            for row in self.data:
+                print(row)
+        else:
+            for row in self.data[:5]:
+                print(row)
+
+            print('...')
+            
+            for row in self.data[len(self.data)-5:]:
+                print(row)
+        
+        output_str = info_str+data_str
+        reutur
+    
+    def replaceAll(self, query, string):
+        for idx, row in enumerate(self.data):
+            for idy, col in enumerate(row):
+                self.data[idx][idy] = col.replace(query, string)
+
+    def export(self):
+        pass
+
+    def removeSpace(self):
+        for idx, row in enumerate(self.data):
+            for idy, col in enumerate(row):
+                self.data[idx][idy] = col.strip()
+
+    def dropEmptyRows(self):
+        for idx, row in enumerate(self.data):
+            if row == []:
+                del self.data[idx]
+
+    def dropEmptyFields(self):
+        for idx, row in enumerate(self.data):
+            for idy, col in enumerate(row):
+                if col == '':
+                    del self.data[idx][idy]
+
+
+class Stylus:
     def __init__(self, filename):
         if not os.path.exists(filename):
             with open(filename, 'w') as f:
@@ -49,8 +100,12 @@ class Stylus:
 
 
 if __name__ == '__main__':
-    stylus = Stylus('test.csv')
-    stylus.writeCell('x', [5,3])
-    print(stylus.readCell([2,2]))
+    processor = CSVProcessor('data/csv/test.csv','data/proc/out.csv')
+    print(processor.data)
+    processor.removeSpace()
+    processor.dropEmptyRows()
+    processor.replaceAll(query='"',string='')
+    print('AFTER===============')
+    print(processor.data)
     
     
