@@ -40,7 +40,7 @@ class CSVProcessor:
                 self.data[idx][idy] = col.replace(query, string)
 
 
-    def insertChar(self, char, key):
+    def insertChar(self, char, key, after=True):
         '''
         Inserts char at index following first occurence of key in strings fields.
         Useful for configuring delimeters.
@@ -49,7 +49,10 @@ class CSVProcessor:
         for idx, row in enumerate(self.data):
             for idy, col in enumerate(row):
                 index = col.find(key)
-                self.data[idx][idy] = col[:index+1] + char + col[index+1:]
+                if after:
+                    self.data[idx][idy] = col[:index+1] + char + col[index+1:]
+                else:
+                    self.data[idx][idy] = col[:index] + char + col[index:]
 
 
     def export(self):
@@ -130,7 +133,8 @@ class Stylus:
         content[index[0]][index[1]] = data
         self.file.seek(0, os.SEEK_SET)
         self.writer.writerows(content)
-        
+
+
 def mergeCSV(inpath, outpath):
     filenames = os.listdir(inpath)
 
@@ -151,13 +155,8 @@ def mergeCSV(inpath, outpath):
 
 
 if __name__ == '__main__':
-    # mergeCSV('data/csv/', 'data/merge/merge.csv')
-
-    CSVProc = CSVProcessor('data/merge.csv','data/out.csv', delim='@')
+    CSVProc = CSVProcessor('data/out2.csv','data/out3.csv', delim='@')
     CSVProc.removeSpace()
-    CSVProc.dropEmptyRows()
-    CSVProc.replaceAll(query='\\"',string='')
-    CSVProc.insertChar(char='@', key=')')
     CSVProc.export()
 
     

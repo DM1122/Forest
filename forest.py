@@ -3,12 +3,11 @@ import graphviz
 import random
 import json
 import progress.bar
+import warnings
 
 import sys
 sys.path.append('D:\\Workbench\\.repos')
 from Workspace import workspacelib
-
-verbose = 0
 
 
 class Node:
@@ -497,7 +496,6 @@ class Tree:
         return result
 
 
-
 class NodeB:
     '''
     A binary node class.
@@ -551,7 +549,7 @@ class BSTree:
         string = 'BSTree {} | Size: {} | Root: {}'.format(
             hex(id(self)),
             self.getSize(),
-            self.root.data)
+            self.root.data[0])
 
         return string
 
@@ -564,14 +562,17 @@ class BSTree:
         for e in data:
             self.insert(e)
 
+
     def fromCSV(self, filepath):
         with open(filepath, 'r') as fil:
-            reader = csv.reader(fil, delimiter='\t')
+            reader = csv.reader(fil)
             data = [row for row in reader]
 
             bar = progress.bar.Bar('Inserting CSV "{}"'.format(filepath), max=len(data))
             for row in data:
-                cargo = (data[0], data[1]) ### Look into allowing an arbitrary number of elements here
+                self.insert(row)
+                bar.next()
+            bar.finish()
 
 
     def fromJSON(self, filepath):
@@ -588,9 +589,8 @@ class BSTree:
 
 
     def insert(self, data):
-        print('[forest]: Inserting {}'.format(data)) if verbose>=1 else False
-
-        node = NodeB(data=data)
+        data = tuple(data)
+        node = NodeB(data)
 
         if self.root == None:
             self.root = node
@@ -607,17 +607,17 @@ class BSTree:
                     
                     inserted = True
                 else:
-                    print('[forest]: Moving insert left') if verbose>=2 else False
                     curr = curr.left
-
             elif node.data > curr.data:
                 if curr.right == None:
                     curr.right = node
                     node.parent = curr
                     inserted = True
                 else:
-                    print('[forest]: Moving insert right') if verbose>=2 else False
                     curr = curr.right
+            elif node.data == curr.data:
+                print('WARNING: Duplicate node found: "{}"'.format(data[0]))
+                break
 
 
     def delete(self, node):     #WIP
@@ -660,7 +660,6 @@ class BSTree:
         #     self.swap(nodeA, nodeB)
         #     nodeB = None
             
-
 
     def swap(self, nodeA, nodeB):
         '''
@@ -873,13 +872,11 @@ class BSTree:
         return len(self.traverse())
 
 
+
 if __name__ == '__main__':
     tree = BSTree()
-    tree.fromTXT('data/test.txt')
-    nodeA = tree.search('A')
-    nodeB = tree.search('B')
-
-    tree.delete(nodeA)
+    tree.fromCSV('data/dict_sample.csv')    
+    tree.draw()
 
 
 
