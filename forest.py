@@ -3,7 +3,6 @@ import graphviz
 import random
 import json
 import progress.bar
-import warnings
 
 import sys
 sys.path.append('D:\\Workbench\\.repos')
@@ -564,13 +563,25 @@ class BSTree:
 
 
     def fromCSV(self, filepath):
-        with open(filepath, 'r') as fil:
+        with open(filepath) as fil:
             reader = csv.reader(fil)
             data = [row for row in reader]
 
             bar = progress.bar.Bar('Inserting CSV "{}"'.format(filepath), max=len(data))
             for row in data:
                 self.insert(row)
+                bar.next()
+            bar.finish()
+
+
+    def toCSV(self, filepath):
+        with open(filepath, 'w', newline='') as fobj:
+            writer = csv.writer(fobj)
+            nodes = self.traverse(mode='in')
+
+            bar = progress.bar.Bar('Exporting to CSV', max=len(nodes))
+            for node in nodes:
+                writer.writerow(node.data)
                 bar.next()
             bar.finish()
 
