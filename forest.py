@@ -3,6 +3,8 @@ import graphviz
 import random
 import json
 import progress.bar
+import matplotlib.pyplot as plt
+import matplotlib.image as mpimg
 
 import sys
 sys.path.append('D:\\Workbench\\.repos')
@@ -841,7 +843,7 @@ class BSTree:
             return False
 
 
-    def draw(self):
+    def draw(self, dir, show=False):
         '''
         Constructs visual representation of BSTree.
         '''
@@ -875,8 +877,13 @@ class BSTree:
 
         self.traverse(self.root, mode='pre', foo=draw_link)
 
-        path = workspacelib.Workspace.getOpen(file_name='tree', file_ext='.png', output_path='temp/drawings')
+        path = workspacelib.Workspace.getOpen(file_name='tree', file_ext='.dot', output_path=dir)
         graph.render(path, view=False)
+
+        if show:
+            image = mpimg.imread(path+'.png')
+            plt.imshow(image)
+            plt.show()
 
 
     def getSize(self):
