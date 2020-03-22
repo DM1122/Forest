@@ -811,6 +811,24 @@ class BSTree:
         return result
 
 
+    def search_all(self, query):
+        '''
+        Finds and returns all instances of nodes with the same head value (but different cargo).
+        *NOT EFFICIENT*
+        '''
+
+        results = []
+
+        nodes = self.traverse()
+        for node in nodes:
+            if node.data[0] == query:
+                results.append(node)
+        
+        
+        return results
+        
+
+
     def prec(self, node):
         '''
         Returns predecessor of node.
