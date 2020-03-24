@@ -564,10 +564,12 @@ class BSTree:
             self.insert(e)
 
 
-    def fromCSV(self, filepath):
+    def fromCSV(self, filepath, shuffle=True):
         with open(filepath) as fil:
             reader = csv.reader(fil)
             data = [row for row in reader]
+
+            random.shuffle(data) if shuffle else False
 
             bar = progress.bar.Bar('Inserting CSV "{}"'.format(filepath), max=len(data))
             for row in data:
@@ -784,7 +786,7 @@ class BSTree:
 
     def search(self, query):
         '''
-        Searches BST for query and returns node. Otherwise returns false.
+        Searches BST for query and returns node. Otherwise returns None.
         '''
 
         if query == self.root.data[0]:
@@ -804,8 +806,7 @@ class BSTree:
                 elif query > curr.data[0]:
                     curr = curr.right
             else:
-                result = False
-                break
+                return None
         
 
         return result
@@ -824,7 +825,7 @@ class BSTree:
             if node.data[0] == query:
                 results.append(node)
         
-        
+
         return results
         
 
