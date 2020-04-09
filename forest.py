@@ -10,6 +10,7 @@ import sys
 sys.path.append('D:\\Workbench\\.repos')
 from Workspace import workspacelib
 
+import time
 
 class Node:
 
@@ -565,17 +566,25 @@ class BSTree:
 
 
     def fromCSV(self, filepath, shuffle=True):
+        start = time.time() ### REmove AFTER TESTING
+
         with open(filepath) as fil:
             reader = csv.reader(fil)
             data = [row for row in reader]
 
             random.shuffle(data) if shuffle else False
 
+            # data = data[:1] #### REMOVE AFTER TESTING
+
             bar = progress.bar.Bar('Inserting CSV "{}"'.format(filepath), max=len(data))
             for row in data:
                 self.insert(row)
                 bar.next()
             bar.finish()
+        
+        end = time.time()
+        elapsed = end-start
+        print('ELAPSED: {}'.format(round(elapsed,3)))
 
 
     def toCSV(self, filepath):
@@ -583,7 +592,7 @@ class BSTree:
             writer = csv.writer(fobj)
             nodes = self.traverse(mode='in')
 
-            bar = progress.bar.Bar('Exporting to CSV', max=len(nodes))
+            bar = progress.bar.Bar('Exporting tree to CSV', max=len(nodes))
             for node in nodes:
                 writer.writerow(node.data)
                 bar.next()
@@ -635,45 +644,54 @@ class BSTree:
                 break
 
 
-    def delete(self, node):     #WIP
+    def delete(self, node):
 
-        def deleteNoChildren(node):
-            node = None
-        
-        def deleteOneChild(node):
-            # child = node.left if node.left else child = node.right
-            # self.swap(node, child)
-            # child = None
-            pass
+        # node.data = '' #placeholder
 
-        # if node.left == None and node.right == None:        # node has no children
+        # def deleteNoChildren(node):
         #     node = None
-        # elif (node.left == None) != (node.right == None):   # node has only one child
-        #     if node.left == None:                           # only child must be right
-        #         node.right.parent = node.parent
+        
+        # def deleteOneChild(node):
+        #     # child = node.left if node.left else child = node.right
+        #     # self.swap(node, child)
+        #     # child = None
+        #     pass
 
-        #         if node.getSide() == 0:
-        #             node.parent.left = node.right
-        #         elif node.getSide() == 1:
-        #             node.parent.right = node.right
+        if node.left == None and node.right == None:        # node has no children
+            print('Node has no children')
+            if node.parent.left == node:
+                node.parent.left = None
+                node = None
+            elif node.parent.right == node:
+                node.parent.right = None
+                node = node
+
+        elif (node.left == None) != (node.right == None):   # node has only one child
+            if node.left == None:                           # only child must be right
+                node.right.parent = node.parent
+
+                if node.getSide() == 0:
+                    node.parent.left = node.right
+                elif node.getSide() == 1:
+                    node.parent.right = node.right
 
                 
 
-        #     elif node.right == None:                        # only child must be left
-        #         node.left.parent = node.parent
+            elif node.right == None:                        # only child must be left
+                node.left.parent = node.parent
 
-        #         if node.getSide() == 0:
-        #             node.parent.left = node.left
-        #         elif node.getSide() == 1:
-        #             node.parent.right = node.left
+                if node.getSide() == 0:
+                    node.parent.left = node.left
+                elif node.getSide() == 1:
+                    node.parent.right = node.left
 
-        #         node = None
+                node = None
 
-        # elif node.left != None and node.right != None:      # node has two children
-        #     nodeA = node
-        #     nodeB = self.succ(node)
-        #     self.swap(nodeA, nodeB)
-        #     nodeB = None
+        elif node.left != None and node.right != None:      # node has two children
+            nodeA = node
+            nodeB = self.succ(node)
+            self.swap(nodeA, nodeB)
+            nodeB = None
             
 
     def swap(self, nodeA, nodeB):
